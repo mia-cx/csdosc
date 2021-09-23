@@ -1,0 +1,16 @@
+ASIO - Virtual/Digital Mixers
+
+Wat doet het?
+Desktop audio en Externe audio samen routen naar bijv een ASIO driver die je in je DAW kan pleuren.
+
+Waarom vind jij het fijne software?
+makkelijk samplen enzo
+
+Wat is de input -> transformatie -> output?
+Desktop Audio -> Routing -> ASIO Input
+
+Met welke functie zou de software nog beter worden?
+Device Aggregation, cross-platform, betere UI.
+
+Bedenk eens hoe je die functie zou kunnen implementeren.
+zelf een schrijven.
