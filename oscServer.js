@@ -91,7 +91,7 @@ function killOsc() {
 
 //start the server listening on port 8001
 server.listen(8001,function() {
-  console.log("De server staat aan! Je kunt deze via localhost:8001 bereiken.\nJe kunt dit programma afsluiten door stop+enter te typen");
+  console.log("Server started! Reach it with https://csd.mia.cx");
 });
 
 //zorg dat de server alle paths kan bereiken. 
@@ -100,7 +100,7 @@ app.use(express.static(path.join(__dirname,'/')));
 //genereer errormessage als de pagina niet bestaat
 app.use(function(req,res,next) {
   let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-  res.status(400).send("De pagina <b>"+fullUrl+"</b> bestaat niet, heb je het goede adres ingevuld?");
+  res.status(400).send("The page <b>"+fullUrl+"</b> doesn't exist. Did you enter the right url?");
 });
 
 /*----------web-socket--------------/
@@ -220,7 +220,7 @@ async function getUpdateState() {
             resolve();
           }
           else {
-            reject("Er is op dit moment geen update beschikbaar");
+            reject("There's no update available at this moment.");
           }
         }
       });
@@ -252,7 +252,7 @@ async function doUpdate(list) {
         })
       }
     }
-    resolve("De update is geslaagd! Dit programma zal nu worden afgesloten, start het daarna opnieuw op door npm start te typen");
+    resolve("The update was successful! The server will now be closed, restart it with 'npm start'.");
   });
 }
 
