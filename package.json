@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/csdhku/csdosc.git"
+    "url": "git+https://github.com/miacx/csdosc.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/csdhku/csdosc/issues"
+    "url": "https://github.com/csdhku/miacx/issues"
   },
-  "homepage": "https://github.com/csdhku/csdosc#readme",
+  "homepage": "https://github.com/csdhku/miacx#readme",
   "dependencies": {
     "express": "^4.17.1",
     "lodash": "^4.17.20",
