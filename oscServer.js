@@ -91,7 +91,7 @@ function killOsc() {
 
 //start the server listening on port 8001
 server.listen(8001,function() {
-  console.log("Server started! Reach it with https://csd.mia.cx");
+  console.log("Server started! Reach it with https://172.0.0.1:8001");
 });
 
 //zorg dat de server alle paths kan bereiken. 
