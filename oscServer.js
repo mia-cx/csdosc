@@ -65,9 +65,9 @@ rl.on('line', (input) => {
 });
 
 async function requestUpdate() {
-  await downloadFile('https://csd.hku.nl/sysbas/csdoscHelper/updateState.txt','./.updateState.txt')
+  await downloadFile('https://raw.githubusercontent.com/mia-cx/csdosc/master/.updateState.txt','./.updateState.txt')
   .then(getUpdateState)
-  .then(downloadFile('https://csd.hku.nl/sysbas/csdoscHelper/filesToUpdate.txt','./.filesToUpdate.txt'))
+  .then(downloadFile('https://raw.githubusercontent.com/mia-cx/csdosc/master/.filesToUpdate.txt','./.filesToUpdate.txt'))
   .then(startUpdate)
   .then(doUpdate)
   .then(updateSucces).catch(error => {
@@ -208,7 +208,7 @@ async function downloadFile(url, filePath) {
 async function getUpdateState() {
   return new Promise((resolve, reject) => {
     fs.readFile('./.lastUpdate.txt','utf8', (err,lastDay) => {
-      if (err)reject ("er ging iets fout...");
+      if (err)reject ("something went wrong during lastUpdate check...");
       let lastUpdate = new Date(lastDay);
       fs.readFile('./.updateState.txt', 'utf8', (err,data) => {
         if (err) {
@@ -246,7 +246,7 @@ async function doUpdate(list) {
   return new Promise(async (resolve, reject) => {
     for (let i = 0; i < list.length; i++) {
       if (list[i] !== '') {
-        await downloadFile('https://csd.hku.nl/sysbas/csdoscHelper/csdosc/'+list[i],list[i])
+        await downloadFile('https://raw.githubusercontent.com/mia-cx/csdosc/master/'+list[i],list[i])
         .catch( error => {
           reject(error);
         })
