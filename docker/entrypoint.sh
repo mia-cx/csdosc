@@ -9,8 +9,9 @@ else
     echo "Data directory is empty, downloading csdosc..."
     set -x
     cd /tmp
-    curl -Lo "csdosc.tar.gz" "https://github.com/mia-cx/csdosc/archive/refs/heads/master.tar.gz"
-    tar -xf "csdosc.tar.gz" -C /data
+    wget -O "csdosc.tar.gz" "https://github.com/mia-cx/csdosc/archive/refs/heads/master.tar.gz"
+    tar -xf "csdosc.tar.gz"
+    mv  /tmp/csdosc-master/{,.[^.]}* "/data/"
     rm -rf /tmp/*
     cd /data
     rm -rf \
