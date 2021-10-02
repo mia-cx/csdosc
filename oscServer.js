@@ -9,6 +9,7 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const _ = require('lodash');
+const { update } = require('lodash');
 
 let sendSocket = [];
 let oscServer = [];
@@ -40,11 +41,21 @@ function serverExist(port,id,callback) {
  *----------exit-program------------/
  *///-------------------------------/
 
+//handle cli arguments
+process.argv.slice(2).forEach((val, index) => {
+  if (val === "update") {
+    requestUpdate().then(killOsc()).then(process.exit());
+  } else {
+    console.log("invalid arguments");
+  }
+});
+
 //handle ctrl+c 
 process.on('SIGINT', function(){
   killOsc();
   process.exit (0);
 });
+
 
 //get user input from the terminal
 const rl = readline.createInterface({
@@ -65,6 +76,7 @@ rl.on('line', (input) => {
 });
 
 async function requestUpdate() {
+  console.log("updating");
   await downloadFile('https://raw.githubusercontent.com/mia-cx/csdosc/master/.updateState.txt','./.updateState.txt')
   .then(getUpdateState)
   .then(downloadFile('https://raw.githubusercontent.com/mia-cx/csdosc/master/.filesToUpdate.txt','./.filesToUpdate.txt'))
@@ -73,6 +85,7 @@ async function requestUpdate() {
   .then(updateSucces).catch(error => {
     console.log(error);
   });
+  console.log("update finished");
 }
 
 // close any of the available OSC instances, client and servers.
@@ -208,7 +221,7 @@ async function downloadFile(url, filePath) {
 async function getUpdateState() {
   return new Promise((resolve, reject) => {
     fs.readFile('./.lastUpdate.txt','utf8', (err,lastDay) => {
-      if (err)reject ("something went wrong during lastUpdate check...");
+      if (err)reject ("something went wrong during updating...");
       let lastUpdate = new Date(lastDay);
       fs.readFile('./.updateState.txt', 'utf8', (err,data) => {
         if (err) {
