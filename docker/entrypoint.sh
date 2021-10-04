@@ -21,9 +21,8 @@ else
     find . -type f -exec chmod 640 {} \;
     set +x
     echo "Downloading complete..."
+    echo "Updating/downloading csdosc dependencies..."
+    npm install
 fi
-
-echo "Updating/downloading csdosc dependencies..."
-npm install
 
 exec npm start
