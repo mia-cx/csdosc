@@ -1,2 +1,0 @@
-oscLib.js
-example_client/sketch.js
