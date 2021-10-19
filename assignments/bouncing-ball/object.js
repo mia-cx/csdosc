@@ -12,21 +12,12 @@ export class Canvas {
   create() {
     colorMode(HSL, 360, 1, 1, 1);
     createCanvas(this.w, this.h);
-<<<<<<< HEAD
-    this.fill();
-    frameRate(this.f);
-  }
-
-  fill() {
-    background(0, 0, 0.1, 1);
-=======
     this.fill(0, 0, 0.1, 1);
     frameRate(this.f);
   }
 
   fill(h, s, l, a) {
     background(h, s, l, a);
->>>>>>> 450d0e5 (add bouncing-ball & potential stylesheet)
   }
 
   resize() {

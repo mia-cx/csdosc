@@ -14,8 +14,4 @@ To do:
 - Object collision
 - In-browser settings pane
 ---
-<<<<<<< HEAD
-<a href="https://csd.mia.cx/bouncing-ball/">Running example</a>
-=======
 <a href="https://csd.mia.cx/assignments/bouncing-ball/">Running example</a>
->>>>>>> 450d0e5 (add bouncing-ball & potential stylesheet)

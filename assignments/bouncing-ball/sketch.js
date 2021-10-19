@@ -23,11 +23,7 @@ function setup() {
 
 function draw() {
 
-<<<<<<< HEAD
-  canvas.fill();
-=======
   canvas.fill(0, 0, 0.1, 1);
->>>>>>> 450d0e5 (add bouncing-ball & potential stylesheet)
   map.forEach(obj => {
     obj.render(canvas);
     interact(obj);
