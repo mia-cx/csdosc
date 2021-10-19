@@ -1,7 +1,10 @@
+//TODO import update API correctly into app.js
+//TODO?? enclose update.js in module.exports to avoid readline witchcraft
+
 const fs = require("fs");
 const https = require("https");
+const rl = require("readline").createInterface({ input: process.stdin, output: process.stdout });
 
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 /**
  * ask the user a question and return their response
  * @param {string} query what to prompt the user for
@@ -12,15 +15,16 @@ const prompt = (query) => new Promise((resolve) => rl.question(query, resolve));
 const url = "https://raw.githubusercontent.com/mia-cx/csdosc/";
 const branch = process.argv[2];
 
-update(branch);
-
 /**
  * updates all files from github
  * @param {string} branch defaults to "master"
  */
 async function update(branch) {
+
     let local = await getCurrentVersion();
     console.log("current csdosc version: " + local.version + ", on branch " + local.branch);
+    
+    branch = branch ? branch : local.branch;
 
     let upstream = {
         version: await getLatestVersion(branch),
@@ -32,7 +36,7 @@ async function update(branch) {
         console.log("local and upstream branch do not match!");
 
         try {
-            const r = await prompt("proceed with update? ");
+            const r = await prompt("proceed with update? (y/n) ");
             console.log(r);
         } catch (err) {
             console.error(err.message);
@@ -42,6 +46,7 @@ async function update(branch) {
         process.exit();
     }
 
+    rl.close();
 }
 
 /**
@@ -89,7 +94,7 @@ function getLatestVersion(branch) {
     });
 }
 
-exports = {
+module.exports = {
     update: update,
     getVersion: getCurrentVersion,
     getLatest: getLatestVersion

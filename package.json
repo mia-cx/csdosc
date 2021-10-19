@@ -1,7 +1,7 @@
 {
   "name": "csdosc",
   "version": "2.0.0",
-  "branch": "alpha",
+  "branch": "rewrite",
   "descrition": "web-server for quick prototyping with p5 & osc",
   "main": "app.js",
   "homepage": "https://github.com/mia-cx/csdosc#readme",

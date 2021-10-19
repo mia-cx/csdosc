@@ -1,11 +1,11 @@
 const express = require("express");
 const rl = require("readline").createInterface({ input: process.stdin, output: process.stdout });
 
+const update = require("./api/update");
+
 const app = express();
 
 const PORT = process.argv[2] ? process.argv[2] : 8001;
-
-
 
 process.on("SIGINT", () => {
   console.debug("received SIGINT, closing server.");
@@ -21,6 +21,7 @@ rl.on("line", (input) => {
       stop("stop command");
       break;
     case "update":
+      update.update();
   }
 });
 
