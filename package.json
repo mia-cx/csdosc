@@ -6,9 +6,8 @@
   "main": "app.js",
   "homepage": "https://github.com/mia-cx/csdosc#readme",
   "scripts": {
-    "prestart": "node ./api/update.js ",
     "start": "node app.js",
-    "update": "node ./api/update.js ",
+    "update": "node app.js update",
     "dev": "nodemon app.js"
   },
   "repository": {

@@ -1,5 +1,5 @@
 const express = require("express");
-const rl = require("readline").createInterface({ input: process.stdin, output: process.stdout });
+const rl = require("readline").createInterface({ input: process.stdin, /* output: process.stdout */ }); // can't use stdout cause of double characters :(
 
 const update = require("./api/update");
 
@@ -13,15 +13,15 @@ process.on("SIGINT", () => {
 });
 
 rl.on("line", (input) => {
-  switch (input) {
-    case "kill":
-    case "stop":
-    case "quit":
-    case "q":
+  switch (true) {
+    case input.startsWith("kill"):
+    case input.startsWith("stop"):
+    case input.startsWith("quit"):
+    case input.startsWith("q"):
       stop("stop command");
       break;
-    case "update":
-      update.update();
+    case input.startsWith("update"):
+      update.checkUpdate(input.split(" ")[1]);
   }
 });
 
