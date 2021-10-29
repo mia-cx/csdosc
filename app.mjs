@@ -6,10 +6,6 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 
 import update from './api/update.mjs';
 
-// const express = require("express");
-// const rl = require("readline").createInterface({ input: process.stdin, /* output: process.stdout */ }); // can't use stdout cause of double characters :(
-// const update = require("./api/update.cjs");
-
 const PORT = process.argv[2] ? process.argv[2] : 8001;
 
 process.on("SIGINT", () => {

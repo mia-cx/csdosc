@@ -1,71 +1,90 @@
-import * as readline from 'readline';
-import { readJson, getJson } from './utils.mjs';
+import * as readline from "readline";
+import { readJson, getJson, prompt } from "./utils.mjs";
+
 // import * as md5 from './md5.js';
 
-// import { JSDOM } from 'jsdom';
-// const { window } = new JSDOM("");
-// import jq from 'jquery';
-// const $ = jq(window);
-
-const rl = readline.createInterface({ input: process.stdin, /* output: process.stdout */ });
-
-/**
- * ask the user a question and return their response
- * @param {string} query what to prompt the user for
- * @returns
- */
-const prompt = (query) => new Promise((resolve) => rl.question(query, resolve));
+const rl = readline.createInterface({
+  input: process.stdin,
+});
 
 const url = "https://raw.githubusercontent.com/mia-cx/csdosc/";
-const branch = process.argv[2];
 
 /**
- * updates all files from github
+ * checks whether an update is available
  * @param {string} branch - defaults to "master"
  */
 async function checkUpdate(branch) {
+  // get local version & branch
+  let local = await getLocalVersion().then(
+    (result) => {
+      console.debug(
+        "local csdosc version: " +
+          result.version +
+          ", on branch " +
+          result.branch
+      );
+      return result;
+    },
+    (error) => {
+      console.error(error.stack);
+      return false;
+    }
+  );
 
-  // get local version and assign to {local}
-  let local = await getLocalVersion().then(result => {
-    console.debug("local csdosc version: " + result.version + ", on branch " + result.branch);
-    return result;
-  }, error => {
-    console.error(error.stack);
-    return;
-  });
-
-  // end if {local} undefined
+  // if getLocalVersion fails
   if (!local) {
-    console.error("could not get local version from 'package.json', ending update request.");
+    console.error(
+      "could not get local version from 'package.json', ending update request."
+    );
     return;
   }
-  
+
   branch = branch ? branch : local.branch;
 
-  // let upstream = {
-  //   version: await getLatestVersion(branch),
-  //   branch: branch,
-  // };
-  // console.debug("upstream csdosc version: " + upstream.version + ", on branch " + upstream.branch);
+  // get upstream version at specified branch
+  let upstream = await getUpstreamVersion(branch).then(
+    (result) => {
+      console.debug(
+        "upstream csdosc version: " +
+          result.version +
+          ", on branch " +
+          result.branch
+      );
+      return result;
+    },
+    (error) => {
+      console.error(error.stack);
+      return false;
+    }
+  );
 
-  // if (local.branch !== upstream.branch) {
-  //   process.stdout.write("local and upstream branch do not match! ");
+  // if getUpstreamVersion fails
+  if (!upstream) {
+    console.error(
+      "could not get local version from 'package.json', ending update request."
+    );
+    return;
+  }
 
-  //   if (!proceed()) return;
-  // } else if (local.version !== upstream.version) {
-  //   process.stdout.write(
-  //     "different version available from upstream on branch " + branch
-  //   );
+  // version/branch mismatches
+  if (local.branch !== upstream.branch) {
+    console.warn("local and upstream branch do not match! ");
 
-  //   if (!proceed()) return;
-  // } else {
-  //   console.log("no updates available on branch " + branch);
-  //   return;
-  // }
+    if (!proceed()) return;
+  } else if (local.version !== upstream.version) {
+    console.warn(
+      "different version available from upstream on branch " + branch
+    );
 
-  // return;
+    if (!proceed()) return;
+  } else {
+    console.log("no updates available on branch " + branch);
+    return;
+  }
 
-  // // TODO update
+  // TODO update
+
+  return;
 }
 
 /**
@@ -75,7 +94,7 @@ async function checkUpdate(branch) {
 async function getLocalVersion() {
   return new Promise(async (resolve, reject) => {
     try {
-      let config = await getJson("./package.json");
+      let config = await readJson("./package.json");
       resolve({
         version: config.version,
         branch: config.branch,
@@ -92,26 +111,18 @@ async function getLocalVersion() {
  * @returns {string} - latest version for specified branch
  */
 async function getUpstreamVersion(branch) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (!branch) reject(new Error("no branch speficied"));
 
-
-    
-    https
-      .get(url + branch + "/package.json", (res) => {
-        let data = "";
-        res.on("data", (chunk) => {
-          data += chunk;
-        });
-        res.on("end", () => {
-          data = JSON.parse(data);
-          resolve(data.version);
-        });
-      })
-      .on("error", (err) => {
-        console.log(err.message);
-        reject(err.message);
+    try {
+      let config = await getJson(url + branch + "/package.json");
+      resolve({
+        version: config.version,
+        branch: config.branch,
       });
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 
@@ -121,33 +132,30 @@ async function getUpstreamVersion(branch) {
  */
 async function proceed() {
   let confirm = true;
+  let attempts = 0;
   try {
-    while (confirm) {
-      const r = await prompt("proceed with update? (y/n) ");
+    while (confirm && attempts < 3) {
+      const response = await prompt(rl, "proceed with update? (y/n) ");
 
-      switch (r) {
+      switch (response) {
         case "y":
           console.debug("proceeding with update...");
-          break;
+          return true;
         case "n":
-          confirm = false;
           console.log("cancelling update...");
-          break;
+          return false;
         default:
-          console.log("unknown input: '" + r + "'");
+          console.log("unknown input: '" + response + "'");
+          attempts++;
           break;
       }
     }
+    console.log("too many wrong inputs, cancelling update...")
+    return false;
   } catch (err) {
     console.error(err.message);
-    confirm = false;
+    return false;
   }
-
-  return confirm;
 }
 
-export {
-  checkUpdate as default,
-  getLocalVersion,
-  getUpstreamVersion,
-};
+export { checkUpdate as default, getLocalVersion, getUpstreamVersion };
