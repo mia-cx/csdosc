@@ -4,7 +4,7 @@ import { readJson, getJson, prompt } from "./utils.mjs";
 // import * as md5 from './md5.js';
 
 const rl = readline.createInterface({
-  input: process.stdin,
+    input: process.stdin,
 });
 
 const url = "https://raw.githubusercontent.com/mia-cx/csdosc/";
@@ -14,148 +14,98 @@ const url = "https://raw.githubusercontent.com/mia-cx/csdosc/";
  * @param {string} branch - defaults to "master"
  */
 async function checkUpdate(branch) {
-  // get local version & branch
-  let local = await getLocalVersion().then(
-    (result) => {
-      console.debug(
-        "local csdosc version: " +
-          result.version +
-          ", on branch " +
-          result.branch
-      );
-      return result;
-    },
-    (error) => {
-      console.error(error.stack);
-      return false;
+    // get local version & branch
+    let local = await getLocalVersion()
+        .then((result) => {
+            console.debug(
+                "local csdosc version: " + result.version + ", on branch " + result.branch
+            );
+            return result;
+        })
+        .catch((error) => {
+            throw {
+                message: "could not get local version from 'package.json', ending update request.",
+                error,
+            };
+        });
+
+    branch = branch ? branch : local.branch;
+
+    // get upstream version at specified branch
+    let upstream = await getUpstreamVersion(branch)
+        .then((result) => {
+            console.debug(
+                "upstream csdosc version: " + result.version + ", on branch " + result.branch
+            );
+            return result;
+        })
+        .catch((error) => {
+            throw {
+                message: "could not get upstream version, ending update request.",
+                error,
+            };
+        });
+
+    // version/branch mismatches
+    if (local.branch !== upstream.branch) {
+        console.warn("local and upstream branch do not match! ");
+        if (await !proceed()) return;
+    } else if (local.version !== upstream.version) {
+        console.warn("different version available from upstream on branch " + branch);
+        if (await !proceed()) return;
+    } else {
+        console.log("no updates available on branch " + branch);
+        return;
     }
-  );
 
-  // if getLocalVersion fails
-  if (!local) {
-    console.error(
-      "could not get local version from 'package.json', ending update request."
-    );
+    // TODO update
+
     return;
-  }
-
-  branch = branch ? branch : local.branch;
-
-  // get upstream version at specified branch
-  let upstream = await getUpstreamVersion(branch).then(
-    (result) => {
-      console.debug(
-        "upstream csdosc version: " +
-          result.version +
-          ", on branch " +
-          result.branch
-      );
-      return result;
-    },
-    (error) => {
-      console.error(error.stack);
-      return false;
-    }
-  );
-
-  // if getUpstreamVersion fails
-  if (!upstream) {
-    console.error(
-      "could not get local version from 'package.json', ending update request."
-    );
-    return;
-  }
-
-  // version/branch mismatches
-  if (local.branch !== upstream.branch) {
-    console.warn("local and upstream branch do not match! ");
-
-    if (!proceed()) return;
-  } else if (local.version !== upstream.version) {
-    console.warn(
-      "different version available from upstream on branch " + branch
-    );
-
-    if (!proceed()) return;
-  } else {
-    console.log("no updates available on branch " + branch);
-    return;
-  }
-
-  // TODO update
-
-  return;
 }
 
 /**
  * returns local version & branch from package.json
- * @returns {Promise} Promise object, resolves to object with local version & branch.
+ * @returns {Object} object with local version & branch.
  */
 async function getLocalVersion() {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let config = await readJson("./package.json");
-      resolve({
-        version: config.version,
-        branch: config.branch,
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
+    let { version, branch } = await readJson("./package.json");
+    return { version, branch };
 }
 
 /**
  * get latest version from github
- * @param {string} branch - defaults to "master"
- * @returns {string} - latest version for specified branch
+ * @param {string} b - defaults to "master"
+ * @returns {Object} object with latest version & branch.
  */
-async function getUpstreamVersion(branch) {
-  return new Promise(async (resolve, reject) => {
-    if (!branch) reject(new Error("no branch speficied"));
+async function getUpstreamVersion(b) {
+    if (!b) reject(new Error("no branch speficied"));
 
-    try {
-      let config = await getJson(url + branch + "/package.json");
-      resolve({
-        version: config.version,
-        branch: config.branch,
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
+    let { version, branch } = await getJson(url + b + "/package.json");
+    return { version, branch };
 }
 
 /**
  * asks the user whether to proceed with update
- * @returns {boolean} - whether or not to proceed
+ * @returns {Promise<boolean>} - whether or not to proceed
  */
 async function proceed() {
-  let confirm = true;
-  let attempts = 0;
-  try {
-    while (confirm && attempts < 3) {
-      const response = await prompt(rl, "proceed with update? (y/n) ");
-
-      switch (response) {
-        case "y":
-          console.debug("proceeding with update...");
-          return true;
-        case "n":
-          console.log("cancelling update...");
-          return false;
-        default:
-          console.log("unknown input: '" + response + "'");
-          attempts++;
-          break;
-      }
-    }
-    console.log("too many wrong inputs, cancelling update...")
-    return false;
-  } catch (err) {
-    console.error(err.message);
-    return false;
-  }
+    return new Promise(async (resolve, reject) => {
+        await prompt(rl, "proceed with update? (y/n) ").then((response) => {
+            switch (response) {
+                case "y":
+                    console.debug("proceeding with update...");
+                    resolve(true);
+                case "n":
+                    console.debug("cancelling update...");
+                    resolve(false);
+                default:
+                    reject("unknown input: '" + response + "'");
+            }
+        });
+    }).catch(error => {
+        console.error(error);
+        proceed();
+    });
 }
 
 export { checkUpdate as default, getLocalVersion, getUpstreamVersion };

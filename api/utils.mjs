@@ -1,7 +1,7 @@
-import * as fsp from 'fs/promises';
-import * as fs from 'fs';
-import fetch from 'node-fetch';
-import crypto from 'crypto';
+import * as fsp from "fs/promises";
+import * as fs from "fs";
+import fetch from "node-fetch";
+import crypto from "crypto";
 
 /**
  * gets an object from a local json file asynchronously
@@ -9,14 +9,8 @@ import crypto from 'crypto';
  * @returns {Promise<Object>} promised object parsed from JSON
  */
 export async function readJson(path) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let file = fsp.readFile(path);
-            resolve(JSON.parse(await file));
-        } catch (e) {
-            reject(e);
-        }
-    });
+    let file = fsp.readFile(path);
+    return JSON.parse(await file);
 }
 
 /**
@@ -31,17 +25,11 @@ export function readJsonSync(path) {
 /**
  * gets an object from a json file at a specified url
  * @param {string} url where to get the json file from
- * @returns {Promise<Object>} promised object parsed from JSON
+ * @returns {Object} object parsed from JSON
  */
 export async function getJson(url) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let response = await fetch(url);
-            resolve(await response.json());
-        } catch (e) {
-            reject(e);
-        }
-    });
+    let response = await fetch(url);
+    return await response.json();
 }
 
 /**
@@ -58,4 +46,4 @@ export function prompt(rl, query) {
     });
 }
 
-// export function 
+// export function
