@@ -4,3 +4,4 @@ public/lib/
 node_modules/
 legacy/
 package-lock.json
+csdosc.code-workspace
