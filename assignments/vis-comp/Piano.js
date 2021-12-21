@@ -9,8 +9,12 @@ class Piano {
     };
 
     /* TODO
+        constructor 
         visualizer
         modeselector
-        constructor
     */
+
+    play(note) {
+        // show which note is being played
+    }
 }
