@@ -39,6 +39,15 @@ function serverExist(port, id, callback) {
  *----------exit-program------------/
  */ //-------------------------------/
 
+//handle cli arguments
+process.argv.slice(2).forEach((val, index) => {
+    if (val === "update") {
+        requestUpdate().then(killOsc()).then(process.exit());
+    } else {
+        console.log("invalid arguments");
+    }
+});
+
 //handle ctrl+c
 process.on("SIGINT", function () {
     killOsc();
