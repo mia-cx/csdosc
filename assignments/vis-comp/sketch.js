@@ -9,7 +9,7 @@ const modKeys = {
     add(key) {
         this.values.push(key);
         this.values.sort();
-        console.debug(key + " added to modKeys.values[]");
+        // console.debug(key + " added to modKeys.values[]");
     },
 
     /**
@@ -20,7 +20,7 @@ const modKeys = {
         this.values.indexOf(key) > -1
             ? this.values.splice(this.values.indexOf(key))
             : console.warn(key + " not found in modKeys.values[]!");
-        console.debug(key + " removed from modKeys.values[]");
+        // console.debug(key + " removed from modKeys.values[]");
     }
 };
 
@@ -40,8 +40,8 @@ function draw() {
  * @param {Object} event the keydown event p5 passes along with the function
  */
 function keyPressed(event) {
-    console.debug("pressed:");
-    console.debug(event);
+    // console.debug("pressed:");
+    // console.debug(event);
     const keymap = Piano.keymap.notes;
 
     /*  
@@ -49,12 +49,13 @@ function keyPressed(event) {
         (useful for modifier key combinations, e.g. ctrl + shift + s)
     */
     switch (event.keyCode) {
-        case CONTROL:
-        case SHIFT:
-            console.debug("modifier key pressed: " + event.keyCode);
+        case 16: // SHIFT
+        case 17: // CONTROL
+        case 18: // ALT
+            // console.debug("modifier key pressed: " + event.keyCode);
             modKeys.add(event.keyCode);
         default:
-            if (!modKeys.length) break; // if modifier keys are pressed, do not play the piano
+            if (!!modKeys.values.length) break; // if modifier keys are pressed, do not play the piano
             if (keymap.includes(event.key)) {
                 console.debug(
                     "user pressed key " +
@@ -71,14 +72,14 @@ function keyPressed(event) {
  * @param {Object} event the keydown event p5 passes along with the function
  */
 function keyReleased(event) {
-    console.debug("released:");
-    console.debug(event);
+    // console.debug("released:");
+    // console.debug(event);
     const keymap = Piano.keymap.notes;
 
     switch (event.keyCode) {
         case CONTROL:
         case SHIFT:
-            console.debug("modifier key pressed: " + event.keyCode);
+            // console.debug("modifier key pressed: " + event.keyCode);
             modKeys.del(event.keyCode);
     }
 }
