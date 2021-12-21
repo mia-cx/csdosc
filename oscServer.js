@@ -9,7 +9,6 @@ const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const _ = require("lodash");
-const { update } = require("lodash");
 
 let sendSocket = [];
 let oscServer = [];
@@ -63,13 +62,17 @@ const rl = readline.createInterface({
 //check the code that is given by the user.
 rl.on("line", (input) => {
     //quit the program when one of these words is used.
-    if (input == "quit" || input == "stop" || input == "hou op!") {
-        killOsc();
-        process.exit(0);
-    }
-    //start the update process
-    if (input == "update") {
-        requestUpdate();
+    switch (input) {
+        case "quit":
+        case "q":
+        case "stop":
+        case "hou op":
+            killOsc();
+            process.exit(0);
+            break;
+        case "update":
+            requestUpdate();
+            break;
     }
 });
 
@@ -111,7 +114,9 @@ function killOsc() {
 
 //start the server listening on port 8001
 server.listen(8001, function () {
-    console.log("Server started! Reach it with http://127.0.0.1:8001");
+    console.log(
+        "Your server has started! You can find it at http://localhost:8001 \nClose this server with CTRL+C or the 'quit' command"
+    );
 });
 
 //zorg dat de server alle paths kan bereiken.
