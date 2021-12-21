@@ -115,7 +115,7 @@ function killOsc() {
 //start the server listening on port 8001
 server.listen(8001, function () {
     console.log(
-        "Your server has started! You can find it at http://localhost:8001 \nClose this server with CTRL+C or the 'quit' command"
+        "Your server has started! You can find it at http://127.0.0.1:8001 \nClose this server with CTRL+C or the 'quit' command"
     );
 });
 
