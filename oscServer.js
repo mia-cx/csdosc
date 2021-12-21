@@ -124,9 +124,9 @@ app.use(express.static(path.join(__dirname, "/")));
 app.use(function (req, res, next) {
     let fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
     res.status(400).send(
-        "De pagina <b>" +
+        "The page <b>" +
             fullUrl +
-            "</b> bestaat niet, heb je het goede adres ingevuld?"
+            "</b> doesn't exist. Did you enter the right url?"
     );
 });
 
@@ -247,7 +247,7 @@ async function getUpdateState() {
                     if (lastUpdate < newestUpdate) {
                         resolve();
                     } else {
-                        reject("Er is op dit moment geen update beschikbaar");
+                        reject("There's no update available at this moment.");
                     }
                 }
             });
@@ -281,7 +281,7 @@ async function doUpdate(list) {
             }
         }
         resolve(
-            "De update is geslaagd! Dit programma zal nu worden afgesloten, start het daarna opnieuw op door npm start te typen"
+            "The update was successful! The server will now be closed, restart it with 'npm start'."
         );
     });
 }
