@@ -77,14 +77,15 @@ rl.on("line", (input) => {
 });
 
 async function requestUpdate() {
+    console.log("updating");
     await downloadFile(
-        "https://csd.hku.nl/sysbas/csdoscHelper/updateState.txt",
+        "https://raw.githubusercontent.com/mia-cx/csdosc/master/.updateState.txt",
         "./.updateState.txt"
     )
         .then(getUpdateState)
         .then(
             downloadFile(
-                "https://csd.hku.nl/sysbas/csdoscHelper/filesToUpdate.txt",
+                "https://raw.githubusercontent.com/mia-cx/csdosc/master/.filesToUpdate.txt",
                 "./.filesToUpdate.txt"
             )
         )
@@ -94,6 +95,7 @@ async function requestUpdate() {
         .catch((error) => {
             console.log(error);
         });
+    console.log("update finished");
 }
 
 // close any of the available OSC instances, client and servers.
@@ -113,7 +115,7 @@ function killOsc() {
 //start the server listening on port 8001
 server.listen(8001, function () {
     console.log(
-        "Your server has started! You can find it at http://localhost:8001 \nClose this server with CTRL+C or the 'quit' command"
+        "Your server has started! You can find it at http://127.0.0.1:8001 \nClose this server with CTRL+C or the 'quit' command"
     );
 });
 
@@ -237,7 +239,7 @@ async function downloadFile(url, filePath) {
 async function getUpdateState() {
     return new Promise((resolve, reject) => {
         fs.readFile("./.lastUpdate.txt", "utf8", (err, lastDay) => {
-            if (err) reject("er ging iets fout...");
+            if (err) reject("something went wrong during updating...");
             let lastUpdate = new Date(lastDay);
             fs.readFile("./.updateState.txt", "utf8", (err, data) => {
                 if (err) {
@@ -273,7 +275,8 @@ async function doUpdate(list) {
         for (let i = 0; i < list.length; i++) {
             if (list[i] !== "") {
                 await downloadFile(
-                    "https://csd.hku.nl/sysbas/csdoscHelper/csdosc/" + list[i],
+                    "https://raw.githubusercontent.com/mia-cx/csdosc/master/" +
+                        list[i],
                     list[i]
                 ).catch((error) => {
                     reject(error);
