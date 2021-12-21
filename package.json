@@ -1,28 +1,31 @@
 {
-  "name": "csdosc",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node oscServer.js",
-    "update": ""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/miacx/csdosc.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/csdhku/miacx/issues"
-  },
-  "homepage": "https://github.com/csdhku/miacx#readme",
-  "dependencies": {
-    "express": "^4.17.1",
-    "lodash": "^4.17.20",
-    "node-osc": "^4.1.0",
-    "socket.io": "^2.2.0"
-  }
+    "name": "csdosc",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon oscServer.js",
+        "update": ""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/miacx/csdosc.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/csdhku/miacx/issues"
+    },
+    "homepage": "https://github.com/csdhku/miacx#readme",
+    "dependencies": {
+        "express": "^4.17.1",
+        "lodash": "^4.17.20",
+        "node-osc": "^4.1.0",
+        "socket.io": "^2.2.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.15"
+    }
 }
